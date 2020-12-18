@@ -93,7 +93,8 @@ int EVAL(int weight[8][8], int matrix[8][8], int MAX){
 	for (int i = 0; i <= 7; i++) {
 		for (int j = 0; j <= 7; j++) {
 			if (matrix[i][j] == MAX) {
-				sum += weight[i][j];
+				sum+=weight[i][j];
+				// sum++;
 			}
 		}
 	}
@@ -102,14 +103,14 @@ int EVAL(int weight[8][8], int matrix[8][8], int MAX){
 
 
 bool CUTOFF_TEST(int matrix[8][8], int depth){
-	int max_depth = 7;
+	int max_depth = 11;
 	if ( (depth > max_depth) || TERMINAL_TEST(matrix) ){
 		return true;
 	}
 	return false;
 }
 
-int MAX_VALUE(int depth, int weight[8][8], int matrix[8][8], int player, int MAX){
+int MAX_VALUE(int depth, int weight[8][8], int matrix[8][8], int player, int MAX, int alpha, int beta){
 	if ( CUTOFF_TEST(matrix, depth) ){
 		return EVAL(weight, matrix, MAX);
 	}
@@ -127,12 +128,16 @@ int MAX_VALUE(int depth, int weight[8][8], int matrix[8][8], int player, int MAX
   			}
 		}
 		EXECUTE_MOVE(matrix_copy, player, row, col);
-		v = std::max(v, MIN_VALUE(depth + 1, weight, matrix_copy, player, MAX));
+		v = std::max(v, MIN_VALUE(depth + 1, weight, matrix_copy, player, MAX, alpha, beta));
+		if (v >=beta ){
+			return v;
+		}
+		alpha = std::max(alpha, v);
 	}
 	return v;
 }
 
-int MIN_VALUE(int depth, int weight[8][8], int matrix[8][8], int player, int MAX){
+int MIN_VALUE(int depth, int weight[8][8], int matrix[8][8], int player, int MAX,int alpha, int beta){
 	if ( CUTOFF_TEST(matrix, depth) ){
 		return EVAL(weight, matrix, MAX);
 	}
@@ -150,7 +155,11 @@ int MIN_VALUE(int depth, int weight[8][8], int matrix[8][8], int player, int MAX
   			}
 		}
 		EXECUTE_MOVE(matrix_copy, player, row, col);
-		v = std::min(v, MAX_VALUE(depth + 1, weight, matrix_copy, player, MAX));
+		v = std::min(v, MAX_VALUE(depth + 1, weight, matrix_copy, player, MAX, alpha, beta));
+		if (v <= alpha){
+			return v;
+		}
+		beta = std::min(beta, v);
 	}
 	return v;
 }
@@ -162,6 +171,8 @@ std::string MINIMAX_DECISION(int weight[8][8], int matrix[8][8], int player){
 	int v = -10001;
 	int depth = 1;
 	int MAX = player;
+	int alpha = -10000;
+	int beta = -10000;
 	for (int i = 0; i < actions.length(); i += 2) {
 		int row = (int)actions[i]  - (int)('0');
 		int col = (int)actions[i + 1] - (int)('0');
@@ -172,7 +183,7 @@ std::string MINIMAX_DECISION(int weight[8][8], int matrix[8][8], int player){
   			}
 		}
 		EXECUTE_MOVE(matrix_copy, player, row, col);
-		int temp = MIN_VALUE(depth + 1, weight, matrix_copy, player, MAX);
+		int temp = MIN_VALUE(depth + 1, weight, matrix_copy, player, MAX, alpha,beta);
 		if (temp > v) {
 			v = temp;
 			action = "";
