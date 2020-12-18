@@ -1,0 +1,70 @@
+ALPHA_BETA_SEARCH(state){
+    v = MAX_VALUE(state, -inf, +inf);
+    action = ...
+    return action ;
+}
+
+
+
+MAX_VALUE(state, a, b){
+    if(CUTTOFF_TEST){
+
+    }
+    ...
+    return v;
+}
+
+
+
+MIN_VALUE(state, a, b){
+    ...
+    return v;
+}
+
+
+
+// --------------------------------------------------
+
+bool TERMINAL_TEST(state){
+    if(...){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool CUTTOFF_TEST(state, depth){
+    if(current_depth > depth || TERMINAL_TEST(state)){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// --------------------------------------------------
+
+/*
+UTILITY(state, player){
+}
+*/
+
+EVAL(state, player){
+    sum = w1 * f1 + w2 * f2 + ...
+    return sum;
+}
+
+// --------------------------------------------------
+
+
+PLAYER(state){
+    // return which player has the move in a given state
+    return player;
+}
+
+
+// --------------------------------------------------
+
+RESULT(state, action){
+    ...
+    return state2
+}
